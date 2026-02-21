@@ -24,10 +24,9 @@ public class MongoDBAtlasDownloadExample {
         String uri = dotenv.get("MONGODB_URI");
 
         if (uri == null || uri.isEmpty() || uri.contains("<db_password>")) {
-            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.err.println("ERROR: The MONGODB_URI is not set correctly in the .env file.");
-            System.err.println("Please ensure the .env file exists at the project root and contains your full MongoDB Atlas connection string.");
-            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.err.println(
+                    "Please ensure the .env file exists at the project root and contains your full MongoDB Atlas connection string.");
             return;
         }
 
@@ -61,12 +60,26 @@ public class MongoDBAtlasDownloadExample {
             System.out.println("Downloaded movies from 1975: " + movieList.size());
 
             // Print movies using a lambda forEach
-            movieList.forEach(System.out::println);
+            // movieList.forEach(System.out::println);
+
+            // --- MY ASSIGNMENT CODE STARTS HERE ---
+
+            // 1. How many movies were made in 1975?
+            long numberOfMovies = countMoviesFrom1975(movieList);
+            System.out.println("1. Number of movies from 1975: " + numberOfMovies);
 
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
         }
+    }
+
+    // 1. Method to count how many movies were made in 1975
+    // I take the movieList as a parameter and return a long number
+    public long countMoviesFrom1975(List<Movie> movies) {
+        // I convert the list to a stream and simply count how many items are in it
+        // since the list already only contains movies from 1975 from the database query
+        return movies.stream().count();
     }
 
     public static void main(String[] args) {
