@@ -44,7 +44,7 @@ public class MongoDBAtlasDownloadExample {
             // Send a ping to confirm a successful connection
             MongoDatabase adminDb = mongoClient.getDatabase("admin");
             adminDb.runCommand(new Document("ping", 1));
-            System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
+            System.out.println("You successfully connected to MongoDB!");
 
             // Now, proceed with the original logic of fetching movies
             MongoDatabase database = mongoClient.getDatabase("sample_mflix");
@@ -68,6 +68,10 @@ public class MongoDBAtlasDownloadExample {
             long numberOfMovies = countMoviesFrom1975(movieList);
             System.out.println("1. Number of movies from 1975: " + numberOfMovies);
 
+            // 2. Find the length of the movie that was longest
+            int longestRuntime = findLongestRuntime(movieList);
+            System.out.println("2. Longest runtime: " + longestRuntime + " minutes");
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -80,6 +84,16 @@ public class MongoDBAtlasDownloadExample {
         // I convert the list to a stream and simply count how many items are in it
         // since the list already only contains movies from 1975 from the database query
         return movies.stream().count();
+    }
+
+    // 2. Method to find the longest movie runtime
+    // I map the stream of movies into an IntStream containing only the runtimes,
+    // and then I get the maximum value. I return 0 if the stream is empty.
+    public int findLongestRuntime(List<Movie> movies) {
+        return movies.stream()
+                .mapToInt(Movie::getRuntime)
+                .max()
+                .orElse(0);
     }
 
     public static void main(String[] args) {
