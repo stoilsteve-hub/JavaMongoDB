@@ -24,7 +24,7 @@ class MongoDBAtlasDownloadExampleTest {
                 new Movie("1", "Heated Rivalry", 1975,
                         Arrays.asList("Romance", "Drama"),
                         Arrays.asList("Fake Director 1"),
-                        Arrays.asList("Actor A", "Actor B", "Actor C"),
+                        Arrays.asList("Actor A", "Ilya Rozanov", "Shane Hollander"),
                         8.0,
                         Arrays.asList("English"),
                         124),
