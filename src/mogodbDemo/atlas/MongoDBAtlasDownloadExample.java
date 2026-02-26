@@ -81,6 +81,10 @@ public class MongoDBAtlasDownloadExample {
             List<String> topActors = getActorsInHighestRatedMovie(movieList);
             System.out.println("4. Actors in highest rated movie: " + topActors);
 
+            // 5. What is the title of the movie with the fewest listed actors?
+            String titleFewestActors = getMovieWithFewestActors(movieList);
+            System.out.println("5. Movie with fewest actors: " + titleFewestActors);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -119,6 +123,16 @@ public class MongoDBAtlasDownloadExample {
                 .max((m1, m2) -> Double.compare(m1.getImdbRating(), m2.getImdbRating()))
                 .map(Movie::getCast)
                 .orElse(new ArrayList<>());
+    }
+
+    // 5. Gets the title of the movie with the fewest actors
+    public String getMovieWithFewestActors(List<Movie> movies) {
+        // I use min to find the movie with the smallest cast list size,
+        // then I map it to just get the title
+        return movies.stream()
+                .min((m1, m2) -> Integer.compare(m1.getCast().size(), m2.getCast().size()))
+                .map(Movie::getTitle)
+                .orElse("No movie found");
     }
 
     public static void main(String[] args) {
