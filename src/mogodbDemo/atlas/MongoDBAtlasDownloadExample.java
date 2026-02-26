@@ -89,6 +89,10 @@ public class MongoDBAtlasDownloadExample {
             long actorsInMultipleMovies = countActorsInMultipleMovies(movieList);
             System.out.println("6. Actors in more than one movie: " + actorsInMultipleMovies);
 
+            // 7. What was the name of the actor who was in the most movies?
+            String mostFrequentActor = getMostFrequentActor(movieList);
+            System.out.println("7. Actor in most movies: " + mostFrequentActor);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -153,6 +157,20 @@ public class MongoDBAtlasDownloadExample {
                 .distinct()
                 .filter(actor -> java.util.Collections.frequency(allActors, actor) > 1)
                 .count();
+    }
+
+    // 7. Finds the actor who was in the most movies
+    public String getMostFrequentActor(List<Movie> movies) {
+        // I group all actors by their name and count how many times they appear,
+        // then I find the maximum count and return the name of that actor
+        return movies.stream()
+                .flatMap(movie -> movie.getCast().stream())
+                .map(String::valueOf)
+                .collect(java.util.stream.Collectors.groupingBy(actor -> actor, java.util.stream.Collectors.counting()))
+                .entrySet().stream()
+                .max(java.util.Map.Entry.comparingByValue())
+                .map(java.util.Map.Entry::getKey)
+                .orElse("No actor found");
     }
 
     public static void main(String[] args) {
