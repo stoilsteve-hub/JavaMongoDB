@@ -123,7 +123,7 @@ class MongoDBAtlasDownloadExampleTest {
 
     @Test
     void testHasDuplicateTitles() {
-        // We artificially added a duplicate "Heated Rivalry" title
+        // Artificially added a duplicate "Heated Rivalry" title
         boolean hasDuplicates = exampleApp.hasDuplicateTitles(mockMovies);
         assertTrue(hasDuplicates);
     }

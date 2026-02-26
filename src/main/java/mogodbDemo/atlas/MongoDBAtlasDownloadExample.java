@@ -70,7 +70,7 @@ public class MongoDBAtlasDownloadExample {
             // answers
             // movieList.forEach(System.out::println);
 
-            // --- MY ASSIGNMENT CODE STARTS HERE ---
+            // --- ASSIGNMENT START ---
 
             // 1. How many movies were made in 1975?
             long numberOfMovies = countMoviesFrom1975(movieList);
@@ -176,7 +176,7 @@ public class MongoDBAtlasDownloadExample {
                         actor -> actor,
                         java.util.stream.Collectors.counting()))
                 .values().stream()
-                //.filter(count -> count > 1)
+                .filter(count -> count > 1)
                 .count();
     }
 
