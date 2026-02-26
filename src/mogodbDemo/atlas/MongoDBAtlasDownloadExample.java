@@ -41,12 +41,12 @@ public class MongoDBAtlasDownloadExample {
 
         // Create a new client and connect to the server
         try (MongoClient mongoClient = MongoClients.create(settings)) {
-            // Send a ping to confirm a successful connection
+            // Successful connection
             MongoDatabase adminDb = mongoClient.getDatabase("admin");
             adminDb.runCommand(new Document("ping", 1));
             System.out.println("You successfully connected to MongoDB!");
 
-            // Now, proceed with the original logic of fetching movies
+            // Fetching movies
             MongoDatabase database = mongoClient.getDatabase("sample_mflix");
             MongoCollection<Document> moviesCollection = database.getCollection("movies");
 
@@ -59,7 +59,8 @@ public class MongoDBAtlasDownloadExample {
 
             System.out.println("Downloaded movies from 1975: " + movieList.size());
 
-            // Print movies using a lambda forEach
+            // I commented this out because it prints thousands of lines and hides my
+            // answers
             // movieList.forEach(System.out::println);
 
             // --- MY ASSIGNMENT CODE STARTS HERE ---
@@ -72,28 +73,38 @@ public class MongoDBAtlasDownloadExample {
             int longestRuntime = findLongestRuntime(movieList);
             System.out.println("2. Longest runtime: " + longestRuntime + " minutes");
 
+            // 3. How many UNIQUE genres did the movies from 1975 have?
+            long uniqueGenresCount = countUniqueGenres(movieList);
+            System.out.println("3. Number of unique genres: " + uniqueGenresCount);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
         }
     }
 
-    // 1. Method to count how many movies were made in 1975
-    // I take the movieList as a parameter and return a long number
+    // 1. Counts how many movies are in the list
     public long countMoviesFrom1975(List<Movie> movies) {
-        // I convert the list to a stream and simply count how many items are in it
-        // since the list already only contains movies from 1975 from the database query
+        // I use a stream to just count the movies
         return movies.stream().count();
     }
 
-    // 2. Method to find the longest movie runtime
-    // I map the stream of movies into an IntStream containing only the runtimes,
-    // and then I get the maximum value. I return 0 if the stream is empty.
+    // 2. Finds the highest runtime
     public int findLongestRuntime(List<Movie> movies) {
+        // I map to int so I can use max() to find the longest one
         return movies.stream()
                 .mapToInt(Movie::getRuntime)
                 .max()
                 .orElse(0);
+    }
+
+    // 3. Counts how many unique genres there are
+    public long countUniqueGenres(List<Movie> movies) {
+        // flatMap puts all genres in one stream, distinct removes duplicates
+        return movies.stream()
+                .flatMap(movie -> movie.getGenres().stream())
+                .distinct()
+                .count();
     }
 
     public static void main(String[] args) {
