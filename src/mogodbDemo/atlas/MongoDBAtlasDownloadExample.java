@@ -77,6 +77,10 @@ public class MongoDBAtlasDownloadExample {
             long uniqueGenresCount = countUniqueGenres(movieList);
             System.out.println("3. Number of unique genres: " + uniqueGenresCount);
 
+            // 4. Which actors played in the movie with the highest IMDB rating?
+            List<String> topActors = getActorsInHighestRatedMovie(movieList);
+            System.out.println("4. Actors in highest rated movie: " + topActors);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -105,6 +109,16 @@ public class MongoDBAtlasDownloadExample {
                 .flatMap(movie -> movie.getGenres().stream())
                 .distinct()
                 .count();
+    }
+
+    // 4. Returns the actors from the movie with the highest rating
+    public List<String> getActorsInHighestRatedMovie(List<Movie> movies) {
+        // I find the max movie by comparing IMDB ratings, then return its cast
+        // If the list is completely empty, I return an empty list
+        return movies.stream()
+                .max((m1, m2) -> Double.compare(m1.getImdbRating(), m2.getImdbRating()))
+                .map(Movie::getCast)
+                .orElse(new ArrayList<>());
     }
 
     public static void main(String[] args) {
