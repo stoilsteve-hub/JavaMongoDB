@@ -17,6 +17,11 @@ import java.util.List;
 
 public class MongoDBAtlasDownloadExample {
 
+    // Added an empty constructor for TDD so we don't connect to the DB during
+    // tests!
+    public MongoDBAtlasDownloadExample(boolean isTest) {
+    }
+
     public MongoDBAtlasDownloadExample() {
 
         // Load environment variables from .env file
@@ -113,10 +118,12 @@ public class MongoDBAtlasDownloadExample {
         }
     }
 
-    // 1. Counts how many movies are in the list
+    // 1. Counts how many movies are in the list from 1975
     public long countMoviesFrom1975(List<Movie> movies) {
-        // I use a stream to just count the movies
-        return movies.stream().count();
+        // I use a stream to filter by 1975 and count the movies
+        return movies.stream()
+                .filter(movie -> movie.getYear() == 1975)
+                .count();
     }
 
     // 2. Finds the highest runtime
