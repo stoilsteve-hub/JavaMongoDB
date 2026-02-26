@@ -101,6 +101,12 @@ public class MongoDBAtlasDownloadExample {
             boolean duplicateTitlesExist = hasDuplicateTitles(movieList);
             System.out.println("9. Are there duplicate titles: " + duplicateTitlesExist);
 
+            // --- VG: HIGHER ORDER FUNCTION ---
+            // VG Requirement: Higher-Order function to duplicate functionality (count
+            // movies)
+            long moviesFrom1975HOF = countMoviesMatchingCondition(movieList, movie -> movie.getYear() == 1975);
+            System.out.println("VG. Number of movies from 1975 (using Higher-Order Function): " + moviesFrom1975HOF);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -197,6 +203,15 @@ public class MongoDBAtlasDownloadExample {
         long totalTitles = movies.stream().map(Movie::getTitle).count();
         long uniqueTitles = movies.stream().map(Movie::getTitle).distinct().count();
         return totalTitles > uniqueTitles;
+    }
+
+    // --- VG HIGHER ORDER FUNCTION ---
+    // Takes a Predicate as an argument
+    public long countMoviesMatchingCondition(List<Movie> movies, java.util.function.Predicate<Movie> condition) {
+        // I use the condition lambda inside my filter method
+        return movies.stream()
+                .filter(condition)
+                .count();
     }
 
     public static void main(String[] args) {
