@@ -97,6 +97,10 @@ public class MongoDBAtlasDownloadExample {
             long uniqueLanguagesCount = countUniqueLanguages(movieList);
             System.out.println("8. Number of unique languages: " + uniqueLanguagesCount);
 
+            // 9. Is there any title shared by more than one movie?
+            boolean duplicateTitlesExist = hasDuplicateTitles(movieList);
+            System.out.println("9. Are there duplicate titles: " + duplicateTitlesExist);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -184,6 +188,15 @@ public class MongoDBAtlasDownloadExample {
                 .flatMap(movie -> movie.getLanguages().stream())
                 .distinct()
                 .count();
+    }
+
+    // 9. Checks if any title appears more than once
+    public boolean hasDuplicateTitles(List<Movie> movies) {
+        // I map to get only the titles, and check if the total count is larger than the
+        // distinct count
+        long totalTitles = movies.stream().map(Movie::getTitle).count();
+        long uniqueTitles = movies.stream().map(Movie::getTitle).distinct().count();
+        return totalTitles > uniqueTitles;
     }
 
     public static void main(String[] args) {
