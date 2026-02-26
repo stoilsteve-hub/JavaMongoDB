@@ -7,15 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class Movie {
-    private String id;
-    private String title;
-    private int year;
-    private int runtime;
-    private List<String> genres;
-    private List<String> directors;
-    private List<String> cast;
-    private double imdbRating;
-    private List<String> languages;
+    private final String id;
+    private final String title;
+    private final int year;
+    private final int runtime;
+    private final List<String> genres;
+    private final List<String> directors;
+    private final List<String> cast;
+    private final double imdbRating;
+    private final List<String> languages;
 
     public Movie(
             String id,
@@ -26,8 +26,7 @@ public class Movie {
             List<String> cast,
             double imdbRating,
             List<String> languages,
-            int runtime
-    ) {
+            int runtime) {
         this.id = id;
         this.title = title;
         this.year = year;
@@ -39,7 +38,7 @@ public class Movie {
         this.languages = languages;
     }
 
-    // Convert MongoDB document to Movie object (null-safe)
+    // Convert MongoDB document to Movie object 
     public static Movie fromDocument(Document doc) {
         if (doc == null) {
             return new Movie("", "", 0,
@@ -55,14 +54,16 @@ public class Movie {
         double rating = 0.0;
         if (imdb != null) {
             Object r = imdb.get("rating");
-            if (r instanceof Number) rating = ((Number) r).doubleValue();
+            if (r instanceof Number)
+                rating = ((Number) r).doubleValue();
         }
 
         ObjectId objectId = doc.getObjectId("_id");
         String id = (objectId != null) ? objectId.toString() : "";
-        
+
         String title = doc.getString("title");
-        if (title == null) title = "";
+        if (title == null)
+            title = "";
 
         Integer yearVal = doc.getInteger("year");
         int year = (yearVal != null) ? yearVal : 0;
@@ -71,29 +72,59 @@ public class Movie {
         int runtime = (runtimeVal != null) ? runtimeVal : 0;
 
         List<String> genres = doc.getList("genres", String.class);
-        if (genres == null) genres = Collections.emptyList();
+        if (genres == null)
+            genres = Collections.emptyList();
 
         List<String> directors = doc.getList("directors", String.class);
-        if (directors == null) directors = Collections.emptyList();
+        if (directors == null)
+            directors = Collections.emptyList();
 
         List<String> cast = doc.getList("cast", String.class);
-        if (cast == null) cast = Collections.emptyList();
+        if (cast == null)
+            cast = Collections.emptyList();
 
         List<String> languages = doc.getList("languages", String.class);
-        if (languages == null) languages = Collections.emptyList();
+        if (languages == null)
+            languages = Collections.emptyList();
 
         return new Movie(id, title, year, genres, directors, cast, rating, languages, runtime);
     }
 
-    public String getId() { return id; }
-    public String getTitle() { return title; }
-    public int getYear() { return year; }
-    public int getRuntime() { return runtime; }
-    public List<String> getGenres() { return genres; }
-    public List<String> getDirectors() { return directors; }
-    public List<String> getCast() { return cast; }
-    public double getImdbRating() { return imdbRating; }
-    public List<String> getLanguages() { return languages; }
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public List<String> getDirectors() {
+        return directors;
+    }
+
+    public List<String> getCast() {
+        return cast;
+    }
+
+    public double getImdbRating() {
+        return imdbRating;
+    }
+
+    public List<String> getLanguages() {
+        return languages;
+    }
 
     @Override
     public String toString() {

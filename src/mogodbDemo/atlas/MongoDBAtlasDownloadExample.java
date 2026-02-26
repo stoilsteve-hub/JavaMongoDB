@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MongoDBAtlasDownloadExample {
 
-    // Added an empty constructor for TDD so we don't connect to the DB during
+    // Added an empty constructor for TDD so I don't connect to the DB during
     // tests!
     public MongoDBAtlasDownloadExample(boolean isTest) {
     }
@@ -166,17 +166,15 @@ public class MongoDBAtlasDownloadExample {
 
     // 6. Counts how many actors are in more than 1 movie
     public long countActorsInMultipleMovies(List<Movie> movies) {
-        // I make one big list of every actor in every movie
-        List<String> allActors = movies.stream()
+        // I use groupingBy to count occurrences of each actor inside the stream directly,
+        // then I filter the map values that are greater than 1 and count how many there are.
+        return movies.stream()
                 .flatMap(movie -> movie.getCast().stream())
-                .map(String::valueOf)
-                .collect(java.util.stream.Collectors.toList());
-
-        // I filter the distinct actors by checking if their frequency in the big list
-        // is > 1
-        return allActors.stream()
-                .distinct()
-                .filter(actor -> java.util.Collections.frequency(allActors, actor) > 1)
+                .collect(java.util.stream.Collectors.groupingBy(
+                        actor -> actor,
+                        java.util.stream.Collectors.counting()))
+                .values().stream()
+                .filter(count -> count > 1)
                 .count();
     }
 
