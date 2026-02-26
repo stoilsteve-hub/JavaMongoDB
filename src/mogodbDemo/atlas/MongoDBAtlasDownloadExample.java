@@ -85,6 +85,10 @@ public class MongoDBAtlasDownloadExample {
             String titleFewestActors = getMovieWithFewestActors(movieList);
             System.out.println("5. Movie with fewest actors: " + titleFewestActors);
 
+            // 6. How many actors were in more than 1 movie?
+            long actorsInMultipleMovies = countActorsInMultipleMovies(movieList);
+            System.out.println("6. Actors in more than one movie: " + actorsInMultipleMovies);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -133,6 +137,22 @@ public class MongoDBAtlasDownloadExample {
                 .min((m1, m2) -> Integer.compare(m1.getCast().size(), m2.getCast().size()))
                 .map(Movie::getTitle)
                 .orElse("No movie found");
+    }
+
+    // 6. Counts how many actors are in more than 1 movie
+    public long countActorsInMultipleMovies(List<Movie> movies) {
+        // I make one big list of every actor in every movie
+        List<String> allActors = movies.stream()
+                .flatMap(movie -> movie.getCast().stream())
+                .map(String::valueOf)
+                .collect(java.util.stream.Collectors.toList());
+
+        // I filter the distinct actors by checking if their frequency in the big list
+        // is > 1
+        return allActors.stream()
+                .distinct()
+                .filter(actor -> java.util.Collections.frequency(allActors, actor) > 1)
+                .count();
     }
 
     public static void main(String[] args) {
