@@ -93,6 +93,10 @@ public class MongoDBAtlasDownloadExample {
             String mostFrequentActor = getMostFrequentActor(movieList);
             System.out.println("7. Actor in most movies: " + mostFrequentActor);
 
+            // 8. How many UNIQUE languages do the movies have?
+            long uniqueLanguagesCount = countUniqueLanguages(movieList);
+            System.out.println("8. Number of unique languages: " + uniqueLanguagesCount);
+
         } catch (MongoException e) {
             System.err.println("Connection or query failed. Error:");
             e.printStackTrace();
@@ -171,6 +175,15 @@ public class MongoDBAtlasDownloadExample {
                 .max(java.util.Map.Entry.comparingByValue())
                 .map(java.util.Map.Entry::getKey)
                 .orElse("No actor found");
+    }
+
+    // 8. Counts how many unique languages the movies have
+    public long countUniqueLanguages(List<Movie> movies) {
+        // I flatMap all language lists into one stream, use distinct, and count them
+        return movies.stream()
+                .flatMap(movie -> movie.getLanguages().stream())
+                .distinct()
+                .count();
     }
 
     public static void main(String[] args) {
